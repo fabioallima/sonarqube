@@ -8,8 +8,9 @@ Este guia explica como configurar e usar o SonarQube instalado no WSL2 para anal
 2. [Acessando o SonarQube](#acessando-o-sonarqube)
 3. [Configuração do SonarScanner no Windows](#configuração-do-sonarscanner-no-windows)
 4. [Configuração do Projeto Java](#configuração-do-projeto-java)
-5. [Executando a Análise](#executando-a-análise)
-6. [Observações Importantes](#observações-importantes)
+5. [Obtenha um token de autenticação](#obtenha-um-token-de-autenticação)
+6. [Configuração do projeto](#configuração-do-projeto)
+7. [Executando a Análise](#executando-a-análise)
 
 ## Instalação do SonarQube usando Docker Compose
 
@@ -45,10 +46,112 @@ Este guia explica como configurar e usar o SonarQube instalado no WSL2 para anal
 * Vá para User > My Account > Security.
 * Gere um novo token e copie-o.
 
+## Configuração do projeto
+
+```XML
+  <properties>
+        <java.version>21</java.version>
+        <sonar.projectKey>projeto-java</sonar.projectKey>
+		<sonar.projectName>Projeto Java</sonar.projectName>
+		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+		<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
+		<sonar.language>java</sonar.language>
+		<sonar.coverage.exclusions>
+			**/Application.java,
+			**/config/**,
+			**/entities/**,
+			**/dto/**,
+			**/mappers/**,
+			**/controllers/handlers/**,
+			**/controllers/exceptions/**,
+			**/services/exceptions/**,
+			**/services/validation/**
+		</sonar.coverage.exclusions>
+    </properties>
+
+
+      <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${jacoco.version}</version>
+      </dependency>
+
+<build>
+    <plugins>
+....
+        <plugin>
+ 				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.10</version>
+				<configuration>
+					<excludes>
+						<exclude>com/example/dslist/DslistApplication.class</exclude>
+						<exclude>com/example/dslist/config/**</exclude>
+						<exclude>com/example/dslist/entities/**</exclude>
+						<exclude>com/example/dslist/dto/**</exclude>
+						<exclude>com/example/dslist/mappers/**</exclude>
+						<exclude>com/example/dslist/controllers/handlers/**</exclude>
+						<exclude>com/example/dslist/controllers/exceptions/**</exclude>
+						<exclude>com/example/dslist/services/exceptions/**</exclude>
+						<exclude>com/example/dslist/services/validation/**</exclude>
+					</excludes>
+				</configuration>
+
+				<executions>
+
+					<execution>
+						<id>jacoco-initialize</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+
+					<execution>
+						<id>jacoco-report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/jacoco-report</outputDirectory>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>jacoco-check</id>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<rule>
+									<element>PACKAGE</element>
+									<limits>
+										<limit>
+											<counter>LINE</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.20</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+		</plugin> 
+    <plugins>   
+</build>
+```
+
 ## Executando a Análise
 * Abra um prompt de comando no diretório do seu projeto Java.
 * Execute o comando: 
 ```bash
+mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=token_user
+
 sonar-scanner.bat -Dsonar.projectKey=meu-projeto-java -Dsonar.projectName="Meu Projeto Java" -Dsonar.sources=src/main/java -Dsonar.java.binaries=target/classes -Dsonar.host.url=http://localhost:9000 -Dsonar.token=seu_token_de_autenticacao
+
+mvn clean verify org.jacoco:jacoco-maven-plugin:report sonar:sonar -Dsonar.projectKey=Projeto   -Dsonar.projectName='Projeto Java'   -Dsonar.host.url=http://localhost:9000   -Dsonar.token=seu_token_de_autenticacaoc46bb -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
 ```
 
