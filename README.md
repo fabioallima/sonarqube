@@ -1,80 +1,54 @@
-# Instalador do SonarQube com Docker em Alpine Linux
+# Configuração e Uso do SonarQube com WSL2
 
-Este projeto automatiza a configuração do SonarQube em Alpine Linux usando o Docker dentro do Subsistema Windows para Linux (WSL). Ele simplifica o processo de baixar a imagem do Alpine Linux, configurar o Docker e executar o SonarQube em um ambiente conteinerizado.
+Este guia explica como configurar e usar o SonarQube instalado no WSL2 para analisar projetos Java armazenados em uma máquina Windows.
 
-## Pré-requisitos
+## Índice
 
-Antes de executar este script, certifique-se de ter o seguinte:
+1. [Instalação do SonarQube usando Docker Compose](#instalação-do-sonarqube-usando-docker-compose)
+2. [Acessando o SonarQube](#acessando-o-sonarqube)
+3. [Configuração do SonarScanner no Windows](#configuração-do-sonarscanner-no-windows)
+4. [Configuração do Projeto Java](#configuração-do-projeto-java)
+5. [Executando a Análise](#executando-a-análise)
+6. [Observações Importantes](#observações-importantes)
 
-- O Subsistema do Windows para Linux (WSL) habilitado em seu computador com Windows.
-- O PowerShell instalado em seu computador com Windows.
-- Acesso à internet para baixar o Alpine Linux e os pacotes do Docker.
+## Instalação do SonarQube usando Docker Compose
 
-## Instalação
+1. Certifique-se de que o Docker e o Docker Compose estão instalados no seu WSL2.
+2. Navegue até o diretório `compose` do projeto.
+3. Execute o seguinte comando para iniciar o SonarQube:
 
-1. **Definir Variáveis Básicas**: O script começa definindo variáveis essenciais como a versão do Alpine Linux, arquitetura (que pode ser ajustada para diferentes hardwares como `armhf`, `aarch64`, etc.) e o nome base do modelo.
-
-2. **Baixar o Alpine Linux**: Ele constrói uma URL para baixar o arquivo tar.gz do Alpine Linux para a versão e arquitetura especificadas. Em seguida, verifica se o diretório `.wsl` existe no perfil do usuário, criando-o se necessário, e baixa a imagem do Alpine Linux para lá.
-
-3. **Importar a Imagem do Alpine para o WSL**: Após o download, o script cria um diretório para a distribuição dentro de `.wsl`, se ainda não existir. Então, importa a imagem baixada do Alpine para o WSL, atribuindo a ela o nome `sonarqube`.
-
-4. **Instalar o Docker**: Com o Alpine Linux configurado, o script procede à instalação do Docker atualizando o índice de pacotes, atualizando o sistema e instalando o Docker junto com dependências necessárias. Ajusta os parâmetros do sistema para suportar o Docker e inicia o daemon do Docker.
-
-5. **Verificar Instalação do Docker**: Para garantir que o Docker está corretamente instalado e em execução, o script executa o comando `docker version`, verificando os componentes cliente e servidor. Ele exibe as versões se ambas as verificações passarem, indicando uma configuração bem-sucedida.
-
-6. **Instalar o Docker Compose**: Além disso, ele instala o Docker Compose usando o gerenciador de pacotes do Alpine.
-
-7. **Configurar o SonarQube**: O script copia um arquivo `docker-compose.yml`, que deve definir o serviço SonarQube, para o diretório raiz do Alpine. Ele lista os conteúdos de `/
-
-## Visão Geral do Script
-
-O script realiza as seguintes tarefas:
-
-- Baixa a versão especificada do Alpine Linux do repositório oficial do Alpine Linux.
-- Configura a distribuição do Alpine Linux dentro do ambiente WSL.
-- Instala o Docker e o Docker Compose para facilitar a execução do SonarQube em contêineres.
-- Verifica a instalação bem-sucedida do Docker e do Docker Compose.
-
-# Iniciando o Serviço SonarQube
-
-Após instalar o SonarQube conforme as instruções de instalação acima, você pode usar o script fornecido para iniciar o serviço SonarQube.
-
-## Script para Iniciar o SonarQube
-
-O script `Start.ps1` é projetado para iniciar o serviço SonarQube usando o Docker dentro da sua distribuição WSL. As etapas realizadas pelo script são:
-
-1. Define o `vm.max_map_count` para um valor apropriado necessário pelo SonarQube.
-2. Inicia o daemon do Docker em segundo plano.
-3. Aguarda alguns segundos para garantir que o daemon do Docker tenha sido iniciado.
-4. Usa o `docker-compose` para lançar os serviços definidos no arquivo `docker-compose.yml`.
-5. Exibe uma mensagem de confirmação uma vez que o script tenha sido executado com sucesso.
-
-## Uso
-
-1. Navegue até o diretório que contém o script `Start.ps1`.
-2. Execute o script digitando `./Start.ps1` no seu PowerShell.
-
-Este script deve ser executado após o script de configuração inicial ter sido executado com sucesso e sempre que você desejar iniciar o serviço SonarQube.
+   ```bash
+   docker-compose up -d
+   ```
 
 
-## Estrutura de Arquivos
+## Acessando o SonarQube
 
-O diretório do seu projeto deve ter a seguinte aparência:
+1. Abra um navegador e acesse `http://localhost:9000`.
+2. Clique em "Log in" na página inicial.
+3. Use as credenciais padrão:
+   - Username: admin
+   - Password: admin
+4. Na primeira vez, você será solicitado a alterar a senha.
+5. Após o login, você será direcionado ao dashboard do SonarQube.
 
-SONARQUBE-DOCKERIZED-ON-SL2 <br />
-├── compose <br />
-│ └── docker-compose.yml <br />
-├── README.md <br />
-├── Install.ps1 <br />
-└── Start.ps1 <br />
+## Configuração do SonarScanner no Windows
 
-## Observações
+1. Baixe o SonarScanner para Windows do [site oficial do SonarQube](https://docs.sonarqube.org/latest/analyzing-source-code/scanners/sonarscanner/).
+2. Extraia o arquivo zip para um diretório de sua escolha.
+3. Adicione o diretório `bin` do SonarScanner ao PATH do sistema.
 
-- Certifique-se de ter espaço em disco suficiente disponível para baixar e configurar o Alpine Linux e o Docker.
-- O script é testado com o PowerShell em ambientes Windows. A compatibilidade com outras plataformas não é garantida.
+![Variável de Ambiente](https://raw.githubusercontent.com/fabioallima/sonarqube/refs/heads/images/system_variable_sonar.png)
 
-## Aviso Legal
+## Obtenha um token de autenticação:
+* Acesse a interface web do SonarQube (http://localhost:9000).
+* Vá para User > My Account > Security.
+* Gere um novo token e copie-o.
 
-Este script é fornecido como está, sem qualquer garantia. Use por sua própria conta e risco. Certifique-se de revisar o script e entender suas ações antes de executá-lo.
-
+## Executando a Análise
+* Abra um prompt de comando no diretório do seu projeto Java.
+* Execute o comando: 
+```bash
+sonar-scanner.bat -Dsonar.projectKey=meu-projeto-java -Dsonar.projectName="Meu Projeto Java" -Dsonar.sources=src/main/java -Dsonar.java.binaries=target/classes -Dsonar.host.url=http://localhost:9000 -Dsonar.token=seu_token_de_autenticacao
+```
 
