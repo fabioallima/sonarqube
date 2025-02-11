@@ -160,3 +160,9 @@ sonar-scanner.bat -Dsonar.projectKey=meu-projeto-java -Dsonar.projectName="Meu P
 mvn clean verify org.jacoco:jacoco-maven-plugin:report sonar:sonar -Dsonar.projectKey=Projeto   -Dsonar.projectName='Projeto Java'   -Dsonar.host.url=http://localhost:9000   -Dsonar.token=seu_token_de_autenticacaoc46bb -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
 ```
 
+* Se tiver problemas em executar no terminal do Windows ou Intellij. Use aspas duplas para envolver os valores dos parâmetros:
+
+```bash
+mvn sonar:sonar "-Dsonar.host.url=http://localhost:9000" "Dsonar.login=token_user"
+```
+
