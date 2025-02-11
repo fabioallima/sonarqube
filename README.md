@@ -149,7 +149,7 @@ Este guia explica como configurar e usar o SonarQube instalado no WSL2 para anal
 * Execute o comando: 
 
 ```bash
-mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=token_user
+mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.token=token_user
 ```
 
 ```bash
@@ -163,6 +163,6 @@ mvn clean verify org.jacoco:jacoco-maven-plugin:report sonar:sonar -Dsonar.proje
 * Se tiver problemas em executar no terminal do Windows ou Intellij. Use aspas duplas para envolver os valores dos parâmetros:
 
 ```bash
-mvn sonar:sonar "-Dsonar.host.url=http://localhost:9000" "Dsonar.login=token_user"
+mvn sonar:sonar "-Dsonar.host.url=http://localhost:9000" "Dsonar.token=token_user"
 ```
 
