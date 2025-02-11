@@ -147,11 +147,16 @@ Este guia explica como configurar e usar o SonarQube instalado no WSL2 para anal
 ## Executando a Análise
 * Abra um prompt de comando no diretório do seu projeto Java.
 * Execute o comando: 
+
 ```bash
 mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=token_user
+```
 
+```bash
 sonar-scanner.bat -Dsonar.projectKey=meu-projeto-java -Dsonar.projectName="Meu Projeto Java" -Dsonar.sources=src/main/java -Dsonar.java.binaries=target/classes -Dsonar.host.url=http://localhost:9000 -Dsonar.token=seu_token_de_autenticacao
+```
 
+```bash
 mvn clean verify org.jacoco:jacoco-maven-plugin:report sonar:sonar -Dsonar.projectKey=Projeto   -Dsonar.projectName='Projeto Java'   -Dsonar.host.url=http://localhost:9000   -Dsonar.token=seu_token_de_autenticacaoc46bb -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
 ```
 
