@@ -38,7 +38,7 @@ Este guia explica como configurar e usar o SonarQube instalado no WSL2 para anal
 2. Extraia o arquivo zip para um diretório de sua escolha.
 3. Adicione o diretório `bin` do SonarScanner ao PATH do sistema.
 
-![Variável de Ambiente](https://raw.githubusercontent.com/fabioallima/sonarqube/refs/heads/images/system_variable_sonar.png)
+![Variável de Ambiente](https://raw.githubusercontent.com/fabioallima/sonarqube/refs/heads/main/images/system_variable_sonar.png)
 
 ## Obtenha um token de autenticação:
 * Acesse a interface web do SonarQube (http://localhost:9000).
